@@ -1,0 +1,58 @@
+#include <iostream>
+using namespace std;
+
+struct Transaction {
+    double amount;
+    string receiverWallet;
+};
+
+struct Wallet {
+    string address;
+    Transaction transactions[4];
+    double totalReceived;
+    int suspiciousScore;
+};
+
+void analyzeWallet(Wallet& wallet) {
+    wallet.totalReceived = 0;
+    wallet.suspiciousScore = 0;
+    for (int i = 0; i < 4; ++i) {
+        wallet.totalReceived += wallet.transactions[i].amount;
+        if (wallet.transactions[i].amount > 10000) {
+            wallet.suspiciousScore += 2;
+        }
+        if (wallet.transactions[i].receiverWallet.find("dark") != string::npos) {
+            wallet.suspiciousScore += 3;
+        }
+    }
+    if (wallet.totalReceived > 100000) {
+        wallet.suspiciousScore += 5;
+    }
+}
+
+void printReport(const Wallet& wallet) {
+    cout << "Wallet Address: " << wallet.address << endl;
+    cout << "Total Received: $" << wallet.totalReceived << endl;
+    cout << "Suspicious Score: " << wallet.suspiciousScore <<endl;
+    if (wallet.suspiciousScore >= 7) {
+        cout << "Status: HIGH RISK" << endl;
+    } else if (wallet.suspiciousScore >= 4) {
+        cout << "Status: MEDIUM RISK" << endl;
+    } else {
+        cout << "Status: LOW RISK" << endl;
+    }
+}
+
+int main() {
+    Wallet suspectWallet;
+    suspectWallet.address = "1DrugTrafF1ckerBTCzzz999";
+    suspectWallet.transactions[0] = {5000, "walletX123"};
+    suspectWallet.transactions[1] = {15000, "darknetAlphaWallet"};
+    suspectWallet.transactions[2] = {30000, "walletY321"};
+    suspectWallet.transactions[3] = {60000, "darkMarketWalletZ"};
+
+    analyzeWallet(suspectWallet);
+    printReport(suspectWallet);
+
+    return 0;
+}
